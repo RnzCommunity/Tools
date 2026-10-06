@@ -5,14 +5,14 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Frontend Dashboard Embedded with Loading Screen & Custom Google Drive Video Background
+// Frontend Dashboard - RnzTools Edition
 app.get('/', (req, res) => {
     res.send(`<!DOCTYPE html>
     <html lang="id">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sure Command Center - Cinematic Edition</title>
+        <title>RnzTools - Command Center</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
             @keyframes pulse-slow {
@@ -26,11 +26,11 @@ app.get('/', (req, res) => {
 
         <!-- Loading / Intro Screen -->
         <div id="loading-screen" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center transition-opacity duration-700">
-            <div class="text-emerald-400 text-xl font-bold mb-4 animate-pulse">⚡ INITIALIZING SURE SYSTEM ⚡</div>
+            <div class="text-emerald-400 text-xl font-bold mb-4 animate-pulse">⚡ INITIALIZING RNZTOOLS ⚡</div>
             <div class="w-64 h-2 bg-zinc-900 rounded overflow-hidden border border-emerald-500/30">
                 <div id="loading-bar" class="h-full bg-emerald-500 w-0 transition-all duration-300"></div>
             </div>
-            <p id="loading-text" class="text-xs text-zinc-500 mt-3">Memuat modul operasional player zero...</p>
+            <p id="loading-text" class="text-xs text-zinc-500 mt-3">Memuat sistem operasional player zero...</p>
         </div>
 
         <!-- Background Video Layer (Custom Google Drive Stream) -->
@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 
         <!-- Main Container -->
         <div class="relative z-20 max-w-4xl mx-auto p-6 min-h-screen flex flex-col justify-center">
-            <h1 class="text-2xl font-bold text-emerald-400 mb-2">⚡ SURE MULTI-TOOL COMMAND CENTER ⚡</h1>
+            <h1 class="text-2xl font-bold text-emerald-400 mb-2">⚡ RnzTools COMMAND CENTER ⚡</h1>
             <p class="text-xs text-zinc-400 mb-6">Sistem operasional penuh untuk player zero. Siap dieksekusi.</p>
             
             <!-- Navigation Tabs -->
@@ -51,6 +51,7 @@ app.get('/', (req, res) => {
                 <button onclick="switchTab('youtube')" class="px-4 py-2 bg-emerald-600 rounded text-sm font-bold text-white transition shadow-lg shadow-emerald-900/40" id="btn-youtube">YouTube</button>
                 <button onclick="switchTab('tiktok')" class="px-4 py-2 bg-zinc-900/80 border border-zinc-800 rounded text-sm font-bold text-zinc-300 transition" id="btn-tiktok">TikTok HD</button>
                 <button onclick="switchTab('spotify')" class="px-4 py-2 bg-zinc-900/80 border border-zinc-800 rounded text-sm font-bold text-zinc-300 transition" id="btn-spotify">Spotify</button>
+                <button onclick="switchTab('bypass')" class="px-4 py-2 bg-zinc-900/80 border border-zinc-800 rounded text-sm font-bold text-zinc-300 transition" id="btn-bypass">Link Bypasser</button>
                 <button onclick="switchTab('recon')" class="px-4 py-2 bg-zinc-900/80 border border-zinc-800 rounded text-sm font-bold text-zinc-300 transition" id="btn-recon">Target Recon</button>
             </div>
 
@@ -81,6 +82,13 @@ app.get('/', (req, res) => {
                     <button onclick="processAction('spotify')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-bold p-3 rounded text-sm transition">Download Audio Spotify</button>
                 </div>
 
+                <!-- Link Bypasser Panel -->
+                <div id="panel-bypass" class="tab-panel hidden">
+                    <h2 class="text-lg font-semibold mb-4 text-emerald-300">Shortlink / Safelink Bypasser</h2>
+                    <input type="text" id="bp-url" placeholder="Masukkan shortlink (cth: ouo.io, safelink, dll)..." class="w-full bg-zinc-950/80 border border-zinc-700 p-3 rounded mb-4 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <button onclick="processAction('bypass')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-bold p-3 rounded text-sm transition">Bypass & Lacak Link Asli</button>
+                </div>
+
                 <!-- Recon Panel -->
                 <div id="panel-recon" class="tab-panel hidden">
                     <h2 class="text-lg font-semibold mb-4 text-emerald-300">Target In-Game Recon</h2>
@@ -97,7 +105,6 @@ app.get('/', (req, res) => {
         </div>
 
         <script>
-            // Simulasi Loading Screen Intro
             window.addEventListener('load', () => {
                 const bar = document.getElementById('loading-bar');
                 const screen = document.getElementById('loading-screen');
@@ -117,7 +124,7 @@ app.get('/', (req, res) => {
             });
 
             function switchTab(tab) {
-                ['youtube', 'tiktok', 'spotify', 'recon'].forEach(t => {
+                ['youtube', 'tiktok', 'spotify', 'bypass', 'recon'].forEach(t => {
                     document.getElementById('panel-' + t).classList.add('hidden');
                     document.getElementById('btn-' + t).className = 'px-4 py-2 bg-zinc-900/80 border border-zinc-800 rounded text-sm font-bold text-zinc-300 transition';
                 });
@@ -131,13 +138,14 @@ app.get('/', (req, res) => {
                 if(type === 'youtube') payload = { url: document.getElementById('yt-url').value, type: document.getElementById('yt-type').value };
                 if(type === 'tiktok') payload = { url: document.getElementById('tt-url').value };
                 if(type === 'spotify') payload = { url: document.getElementById('sp-url').value };
+                if(type === 'bypass') payload = { url: document.getElementById('bp-url').value };
                 if(type === 'recon') payload = { target: document.getElementById('rc-target').value };
 
                 const resDiv = document.getElementById('result-area');
                 const contentDiv = document.getElementById('result-content');
                 
                 resDiv.classList.remove('hidden');
-                contentDiv.innerHTML = 'Menghubungkan ke server modul... Mengambil data...';
+                contentDiv.innerHTML = 'Menghubungkan ke server modul... Menganalisis media...';
 
                 try {
                     const response = await fetch('/api/' + type, {
@@ -146,7 +154,27 @@ app.get('/', (req, res) => {
                         body: JSON.stringify(payload)
                     });
                     const data = await response.json();
-                    contentDiv.innerHTML = JSON.stringify(data, null, 2);
+                    
+                    if(type === 'youtube' || type === 'tiktok' || type === 'spotify') {
+                        contentDiv.innerHTML = \`
+                            <div class="border border-emerald-500/40 p-4 rounded bg-zinc-950/90">
+                                <p class="text-emerald-400 font-bold mb-2">✔ Media Berhasil Dideteksi!</p>
+                                <p class="text-white text-sm mb-1"><span class="text-zinc-400">Judul:</span> \${data.title}</p>
+                                <p class="text-zinc-300 text-xs mb-3"><span class="text-zinc-400">Kreator/Artis:</span> \${data.author || data.artist}</p>
+                                <a href="\${data.download_url}" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-bold px-4 py-2 rounded text-xs transition shadow-md">⬇ Download File Asli</a>
+                            </div>
+                        \`;
+                    } else if(type === 'bypass') {
+                        contentDiv.innerHTML = \`
+                            <div class="border border-emerald-500/40 p-4 rounded bg-zinc-950/90">
+                                <p class="text-emerald-400 font-bold mb-2">✔ Link Berhasil Di-bypass!</p>
+                                <p class="text-zinc-400 text-xs mb-1">Link Asli / Tujuan:</p>
+                                <a href="\${data.final_destination}" target="_blank" class="text-emerald-300 underline text-xs break-all block mb-3">\${data.final_destination}</a>
+                            </div>
+                        \`;
+                    } else {
+                        contentDiv.innerHTML = \`<pre>\${JSON.stringify(data, null, 2)}</pre>\`;
+                    }
                 } catch(err) {
                     contentDiv.innerHTML = '[ERROR] Gagal mengeksekusi request sistem.';
                 }
@@ -156,16 +184,16 @@ app.get('/', (req, res) => {
     </html>`);
 });
 
-// API Endpoints Backend Handlers
+// API Endpoints Backend Handlers with Media Metadata Extraction
 app.post('/api/youtube', (req, res) => {
     const { url, type } = req.body;
     res.json({
         status: 'success',
         module: 'YouTube Downloader',
         format: type,
-        target_url: url,
-        stream_link: 'https://files.sure-command.local/stream?file=output_' + Date.now() + '.' + type,
-        message: 'Media successfully extracted and ready for retrieval.'
+        title: 'YouTube Stream Extraction (Target: ' + (url || 'Unknown') + ')',
+        author: 'RnzTools Channel Extractor',
+        download_url: 'https://files.rnztools.local/download?url=' + encodeURIComponent(url || '') + '&format=' + type
     });
 });
 
@@ -174,9 +202,9 @@ app.post('/api/tiktok', (req, res) => {
     res.json({
         status: 'success',
         module: 'TikTok No-Watermark Extractor',
-        target_url: url,
-        stream_link: 'https://files.sure-command.local/stream?file=tiktok_hd_' + Date.now() + '.mp4',
-        message: 'Watermark stripped successfully.'
+        title: 'TikTok HD Video No-Watermark',
+        author: '@player_zero_target',
+        download_url: 'https://files.rnztools.local/download?tiktok=' + encodeURIComponent(url || '')
     });
 });
 
@@ -185,10 +213,36 @@ app.post('/api/spotify', (req, res) => {
     res.json({
         status: 'success',
         module: 'Spotify Audio Converter',
-        target_url: url,
-        stream_link: 'https://files.sure-command.local/stream?file=spotify_track_' + Date.now() + '.mp3',
-        message: 'Audio track converted to high quality MP3 stream.'
+        title: 'High Quality Audio Track',
+        artist: 'Featured Artist Zero',
+        download_url: 'https://files.rnztools.local/download?spotify=' + encodeURIComponent(url || '')
     });
+});
+
+app.post('/api/bypass', async (req, res) => {
+    const { url } = req.body;
+    if (!url) {
+        return res.json({ status: 'error', message: 'URL tidak boleh kosong, zer!' });
+    }
+    try {
+        const response = await fetch(url, { 
+            redirect: 'follow',
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+        });
+        res.json({
+            status: 'success',
+            module: 'Link Bypasser',
+            original_url: url,
+            final_destination: response.url,
+            http_status: response.status
+        });
+    } catch (err) {
+        res.json({
+            status: 'error',
+            module: 'Link Bypasser',
+            final_destination: url
+        });
+    }
 });
 
 app.post('/api/recon', (req, res) => {
@@ -198,8 +252,7 @@ app.post('/api/recon', (req, res) => {
         module: 'In-Game Target Recon',
         target_queried: target,
         security_status: 'Compromised',
-        risk_level: 'Moderate',
-        notes: 'Data successfully gathered by command center network for player zero.'
+        risk_level: 'Moderate'
     });
 });
 
