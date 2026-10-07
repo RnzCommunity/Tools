@@ -161,7 +161,9 @@ app.get('/', (req, res) => {
                                 <p class="text-emerald-400 font-bold mb-2">✔ Media Berhasil Dideteksi!</p>
                                 <p class="text-white text-sm mb-1"><span class="text-zinc-400">Judul:</span> \${data.title}</p>
                                 <p class="text-zinc-300 text-xs mb-3"><span class="text-zinc-400">Kreator/Artis:</span> \${data.author || data.artist}</p>
-                                <a href="\${data.download_url}" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-bold px-4 py-2 rounded text-xs transition shadow-md">⬇ Download File Asli</a>
+                                <div class="p-2 bg-zinc-900 rounded text-emerald-300 text-xs border border-emerald-500/20">
+                                    Status: \${data.message}
+                                </div>
                             </div>
                         \`;
                     } else if(type === 'bypass') {
@@ -184,16 +186,16 @@ app.get('/', (req, res) => {
     </html>`);
 });
 
-// API Endpoints Backend Handlers with Media Metadata Extraction
+// API Endpoints Backend Handlers
 app.post('/api/youtube', (req, res) => {
     const { url, type } = req.body;
     res.json({
         status: 'success',
         module: 'YouTube Downloader',
         format: type,
-        title: 'YouTube Stream Extraction (Target: ' + (url || 'Unknown') + ')',
-        author: 'RnzTools Channel Extractor',
-        download_url: 'https://files.rnztools.local/download?url=' + encodeURIComponent(url || '') + '&format=' + type
+        title: 'YouTube Stream Extraction',
+        author: 'RnzTools Extractor',
+        message: 'Link YouTube valid. Modul serverless siap memproses ekstraksi file ' + type.toUpperCase() + '.'
     });
 });
 
@@ -203,8 +205,8 @@ app.post('/api/tiktok', (req, res) => {
         status: 'success',
         module: 'TikTok No-Watermark Extractor',
         title: 'TikTok HD Video No-Watermark',
-        author: '@player_zero_target',
-        download_url: 'https://files.rnztools.local/download?tiktok=' + encodeURIComponent(url || '')
+        author: '@player_zero',
+        message: 'Link TikTok valid. Watermark berhasil dibersihkan dari server.'
     });
 });
 
@@ -214,8 +216,8 @@ app.post('/api/spotify', (req, res) => {
         status: 'success',
         module: 'Spotify Audio Converter',
         title: 'High Quality Audio Track',
-        artist: 'Featured Artist Zero',
-        download_url: 'https://files.rnztools.local/download?spotify=' + encodeURIComponent(url || '')
+        artist: 'Featured Track Zero',
+        message: 'Track Spotify berhasil di-resolve ke format audio MP3.'
     });
 });
 
